@@ -5,7 +5,6 @@ require 'socket'
 REQUIRED_VAGRANT_API_VERSION_2 = "2"
 BOX_NAME = ENV['BOX_NAME'] || "ubuntu"
 BOX_URI = ENV['BOX_URI'] || "http://files.vagrantup.com/precise64.box"
-VF_BOX_URI = ENV['BOX_URI'] || "http://files.vagrantup.com/precise64_vmware_fusion.box"
 
 Vagrant::Config.run do |config|
 
