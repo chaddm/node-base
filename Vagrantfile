@@ -54,15 +54,30 @@ end
 
 # Providers were added on Vagrant >= 1.1.0
 Vagrant::VERSION >= "1.1.0" and Vagrant.configure(REQUIRED_VAGRANT_API_VERSION_2) do |config|
-  config.vm.provider :virtualbox do |vb, override|
+  config.vm.provider :virtualbox do |provider, override|
     config.vm.box = BOX_NAME
     config.vm.box_url = BOX_URI
-    vb.boot_mode = :gui
-    vb.customize ["modifyvm", :id, "--memory", 1024]
-    vb.customize ["modifyvm", :id, "--cpus", 3]
-    vb.customize ["modifyvm", :id, "--cpuexecutioncap", "80"]
-    vb.customize ["modifyvm", :id, "--vram", 12]
+    provider.customize ["modifyvm", :id, "--memory", 1024]
+    provider.customize ["modifyvm", :id, "--cpus", 3]
+    provider.customize ["modifyvm", :id, "--cpuexecutioncap", "80"]
+    provider.customize ["modifyvm", :id, "--vram", 12]
     override.vm.synced_folder ".", "/vagrant", disabled: true
+    config.vm.synced_folder "../", "/workspace"
+  end
+
+  config.vm.provider :digital_ocean do |provider, override|
+    override.ssh.private_key_path = '~/.ssh/personal'
+    override.vm.box = 'digital_ocean'
+    override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
+
+    provider.ca_path = "ca-bundle.crt"
+    provider.image = "Ubuntu 12.04 x64"
+    provider.region = "New York 2"
+    provider.size = "512MB"
+    provider.private_networking = false
+
+    provider.client_id = ENV['DO_CLIENT_ID']
+    provider.api_key = ENV['DO_API_KEY']
     config.vm.synced_folder "../", "/workspace"
   end
 end
